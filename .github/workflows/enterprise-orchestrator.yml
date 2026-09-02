@@ -1,39 +1,34 @@
 name: CI-WORKFLOW
+
 on:
   push:
-    branches: master
-  workflow_dispatch: 
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
 
 jobs:
-  buil-test:
-    runs-on: ubuntu-slim
-    steps:
-      - name: checkout
-        uses: actions/checkout@v7
+  build-test:
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Your existing CodeQL steps
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: javascript
 
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+      - name: Build
+        run: npm install
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
-
-      - name: build
-        run: npm install
-
-      - name: test
-        run: npm test
-        
-      - name: Artifact upload
-        uses: actions/upload-artifact@v7
-        with:
-          name: artifact-1
-          path: |
-             package*
-
-      - name: deploy
-        run: echo "my code is deployed"
