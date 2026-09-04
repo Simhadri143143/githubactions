@@ -1,20 +1,28 @@
-name: App Build
+name: Parallel-Builds
 
 on:
   push:
-    branches: [ master ]
+    branches: [main]
 
 jobs:
-  # Trigger the reusable template
-  call-shared-ci:
-    # Syntax: {owner}/{repo}/.github/workflows/{filename}@{ref}
-    uses: RAHAMSHAIK007/gabr1/.github/workflows/enterprise-orchestrator.yml@master
-    with:
-      node-version: '20'
-    secrets:
-      DEPLOY_TOKEN: ${{ secrets.PROD_API_KEY }}
 
+  build-1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build 1
+        run: echo "Build 1 running"
 
+  build-2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build 2
+        run: echo "Build 2 running"
+
+  build-3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build 3
+        run: echo "Build 3 running"
 
   
 
