@@ -1,0 +1,24 @@
+name: Output-Parameters
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    outputs:
+      message: ${{ steps.output.outputs.message }}
+
+    steps:
+      - name: Create Output
+        id: output
+        run: echo "message=Build completed successfully" >> $GITHUB_OUTPUT
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show Output
+        run: echo "Output from Build: ${{ needs.build.outputs.message }}"
