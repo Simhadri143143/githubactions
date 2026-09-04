@@ -28,45 +28,37 @@ on:
         default: false
         type: boolean
 
-
 jobs:
-
   build:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Show Inputs
-        run: |
-          echo "Username: ${{ inputs.username }}"
-          echo "Environment: ${{ inputs.environment }}"
-          echo "Deploy: ${{ inputs.deploy }}"
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build
-        run: npm install
+        run: npm run build
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: npm ci
 
       - name: Test
         run: npm test
-  test:
-    needs: build
-    runs-on: ubuntu-slim
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Test
-        run: npm test
-
 
   security:
     needs: test
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
 
     steps:
       - name: Security Check
@@ -79,7 +71,7 @@ jobs:
           echo "Deployed by ${{ inputs.username }}"
 
       - name: Skip Deployment
-        if: ${{ inputs.deploy == false }}
+        if: ${{ inputs.deploy != true }}
         run: echo "Deployment skipped"
 
       - name: Rollback
@@ -87,7 +79,7 @@ jobs:
         run: echo "Rollback is done"
 
   info:
-     runs-on: ubuntu-slim
-     steps:
-       - name: Output of the Job
-         run: echo "${{ toJson(github) }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output of the Job
+        run: echo '${{ toJson(github) }}'
